@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
     public function index(){
-        $posts = Post::paginate(2); // Collection
+        $posts = Post::orderBy('created_at','desc')->with(['user','likes'])->paginate(2); // Collection
         return view('posts.index',[
             'posts'=>$posts
         ]);
@@ -23,6 +23,15 @@ class PostController extends Controller
         // $request->user()->posts()->create([
         //     'body'=> $request->body
         // ]);
+        return back();
+    }
+
+    public function destroy(Post $post){
+
+        $this->authorize('delete',$post);
+
+        $post->delete();
+
         return back();
     }
 }
